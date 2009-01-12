@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name     = "conversions"
-  s.version  = "1.0"
+  s.version  = "1.1"
   s.date     = "2009-01-12"
   s.summary  = "A Ruby on Rails plugin that adds conversion capabilities to numeric objects"
   s.homepage = "http://github.com/Fingertips/conversions/tree/master"

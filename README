@@ -2,3 +2,14 @@ Conversions
 -----------
 
 A plugin to convert units.
+
+Installation
+-----------
+
+As a GemPlugin:
+
+config.gem 'Fingertips-conversions', :lib => 'conversions', :source => 'http://gems.github.com'
+
+As a normal plugin:
+
+script/install plugin git://github.com/Fingertips/conversions.git
