@@ -1,4 +1,3 @@
-require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 
@@ -12,11 +11,24 @@ Rake::TestTask.new(:test) do |t|
   t.verbose = true
 end
 
-desc 'Generate documentation for conversions plugin.'
-Rake::RDocTask.new(:rdoc) do |rdoc|
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title    = 'Conversions'
-  rdoc.options << '--line-numbers' << '--inline-source' << '--charset' << 'utf-8'
-  rdoc.rdoc_files.include('README')
-  rdoc.rdoc_files.include('lib/**/*.rb')
+namespace :rdoc do
+  desc 'Generate documentation for conversions plugin.'
+  Rake::RDocTask.new(:generate) do |rdoc|
+    rdoc.rdoc_dir = 'documentation'
+    rdoc.title    = 'Conversions'
+    rdoc.options << '--line-numbers' << '--inline-source' << '--charset' << 'utf-8'
+    rdoc.rdoc_files.include('README', 'lib/**/*.rb')
+  end
+end
+
+namespace :gem do
+  desc "Build the gem"
+  task :build do
+    sh 'gem build conversions.gemspec'
+  end
+  
+  desc "Install the gem"
+  task :install => :build do
+    sh 'sudo gem install conversions-*.gem'
+  end
 end

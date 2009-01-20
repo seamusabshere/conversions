@@ -1,15 +1,32 @@
-Conversions
------------
+= Conversions
 
-A plugin to convert units.
+The conversions plugin does a number of things. The core functionality is the unit conversion:
 
-Installation
------------
+  1.miles.to(:kilometres) #=> 1.609344
+  1.pounds.to(:kilograms) #=> 0.453592
 
-As a GemPlugin:
+It also adds a class method to ActiveRecord::Base that allows you to define conversion methods for attributes:
 
-config.gem 'Fingertips-conversions', :lib => 'conversions', :source => 'http://gems.github.com'
+  class Car < ActiveRecord::Base
+    conversion_accessor :weight, :internal => :kilograms, :external => :pounds
+  end
 
-As a normal plugin:
+  car = Car.new(:weight => 1500)
+  car.weight_in_pounds #=> 3306.93393
 
-script/install plugin git://github.com/Fingertips/conversions.git
+
+== Installation
+
+=== As a gem
+
+Configure the gem in environment.rb:
+  
+  config.gem 'Fingertips-conversions', :lib => 'conversions', :source => 'http://gems.github.com'
+
+Install them using Rails' rake task:
+
+  $ rake gems:install
+
+=== In your vendor directory:
+
+  script/install plugin git://github.com/Fingertips/conversions.git
