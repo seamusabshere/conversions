@@ -17,6 +17,9 @@ module Conversions
     },
     :cubic_feet => {
       :cubic_meters => 0.0283168466
+    },
+    :miles_per_gallon => {
+      :kilometres_per_litre => 0.425143707
     }
   }
 end

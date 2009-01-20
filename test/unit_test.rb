@@ -28,6 +28,9 @@ class UnitTest < Test::Unit::TestCase
     
     amount = Conversions::Unit.new(10.0, :kilograms)
     assert_equal 22.05, amount.to(:pounds, 2), DELTA
+    
+    amount = Conversions::Unit.new(10.0, :miles_per_gallon)
+    assert_equal 4.25, amount.to(:kilometres_per_litre, 2), DELTA
   end
   
   def test_identity_transforms
