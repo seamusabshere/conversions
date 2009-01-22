@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name = "conversions"
-  spec.version = "1.2.1"
+  spec.version = "1.2.2"
   
   spec.author = "Manfred Stienstra"
   spec.email = "manfred@fngtps.com"
