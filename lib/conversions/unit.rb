@@ -29,28 +29,18 @@ module Conversions #:nodoc
     end
     
     def self.conversion #:nodoc:
-      map_conversion if !defined? @@conversion
-      @@conversion
-    end
-    
-    def self.register(from, to, value)
-      CONVERSION.merge!(from.to_sym => { to.to_sym => value.to_f })
-      map_conversion
-      Numeric.send :include, Conversions::Ext
-    end
-    
-    private
-    
-    def self.map_conversion
-      @@conversion = {}
-      CONVERSION.each do |from, conversion|
-        conversion.each do |to, value|
-          @@conversion[from] ||= {}
-          @@conversion[from][to] = value
-          @@conversion[to] ||= {}
-          @@conversion[to][from] = 1.0 / value
+      if !defined? @@conversion
+        @@conversion = {}
+        CONVERSION.each do |from, conversion|
+          conversion.each do |to, value|
+            @@conversion[from] ||= {}
+            @@conversion[from][to] = value
+            @@conversion[to] ||= {}
+            @@conversion[to][from] = 1.0 / value
+          end
         end
       end
+      @@conversion
     end
   end
 end

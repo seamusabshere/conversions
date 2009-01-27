@@ -38,11 +38,4 @@ class UnitTest < Test::Unit::TestCase
       assert_equal 1.0, Conversions::Unit.new(1.0, unit).to(unit, 2)
     end
   end
-  
-  def test_register
-    Conversions::Unit.register(:dollars, :cents, 100.0)
-    assert_in_delta 0.01, Conversions::Unit.exchange_rate(:cents, :dollars), DELTA
-    amount = Conversions::Unit.new(10.0, :dollars)
-    assert_equal 1000.0, amount.to(:cents, 2), DELTA
-  end
 end
