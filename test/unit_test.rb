@@ -11,7 +11,7 @@ class UnitTest < Test::Unit::TestCase
   end
   
   def test_exchange_rate_for_identity_transform
-    Conversions::Unit.conversion.keys.each do |unit|
+    Conversions.conversions.keys.each do |unit|
       assert_equal 1, Conversions::Unit.exchange_rate(unit, unit)
     end
   end
@@ -21,21 +21,28 @@ class UnitTest < Test::Unit::TestCase
     assert_in_delta 16.09344, amount.to(:kilometres), DELTA
     
     amount = Conversions::Unit.new(10.0, :miles)
-    assert_equal 16.09, amount.to(:kilometres, 2), DELTA
+    assert_equal 16.09, amount.to(:kilometres, :scale => 2), DELTA
     
     amount = Conversions::Unit.new(10.0, :kilograms)
     assert_in_delta 22.0462262184878, amount.to(:pounds), DELTA
     
     amount = Conversions::Unit.new(10.0, :kilograms)
-    assert_equal 22.05, amount.to(:pounds, 2), DELTA
+    assert_equal 22.05, amount.to(:pounds, :scale => 2), DELTA
     
     amount = Conversions::Unit.new(10.0, :miles_per_gallon)
-    assert_equal 4.25, amount.to(:kilometres_per_litre, 2), DELTA
+    assert_equal 4.25, amount.to(:kilometres_per_litre, :scale => 2), DELTA
   end
   
   def test_identity_transforms
-    Conversions::Unit.conversion.keys.each do |unit|
-      assert_equal 1.0, Conversions::Unit.new(1.0, unit).to(unit, 2)
+    Conversions.conversions.each do |unit|
+      assert_equal 1.0, Conversions::Unit.new(1.0, unit).to(unit, :scale => 2)
     end
+  end
+  
+  def test_register
+    Conversions.register(:dollars, :cents, 100.0)
+    assert_in_delta 0.01, Conversions::Unit.exchange_rate(:cents, :dollars), DELTA
+    amount = Conversions::Unit.new(10.0, :dollars)
+    assert_equal 1000.0, amount.to(:cents, :scale => 2), DELTA
   end
 end

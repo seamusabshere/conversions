@@ -39,10 +39,10 @@ module Conversions #:nodoc:
       end
       define_method "#{attribute}_in_#{options[:external]}" do
         v = send(attribute)
-        v ? v.send(options[:internal]).to(options[:external], options[:scale]) : nil
+        v ? v.send(:convert, options[:internal], options[:external], :scale => options[:scale]) : nil
       end
       define_method "#{attribute}_in_#{options[:external]}=" do |v|
-        send("#{attribute}=", v.to_f.send(options[:external]).to(options[:internal]))
+        send("#{attribute}=", v.to_f.send(:convert, options[:external], options[:internal]))
       end
     end
   end

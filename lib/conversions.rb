@@ -1,5 +1,18 @@
 module Conversions
-  CONVERSION = {
+  mattr_accessor :conversions
+  self.conversions = {}
+
+  def self.register(from, to, rate)
+    conversions[from] ||= {}
+    conversions[from][to] ||= {}
+    conversions[from][to] = rate
+    conversions[to] ||= {}
+    conversions[to][from] ||= {}
+    conversions[to][from] = 1 / rate
+  end
+  
+  # This is ugly
+  {
     :miles => {
       :kilometres => 1.609344
     },
@@ -21,7 +34,11 @@ module Conversions
     :miles_per_gallon => {
       :kilometres_per_litre => 0.425143707
     }
-  }
+  }.each do |from_unit, to_units|
+    to_units.each do |to_unit, rate|
+      register(from_unit, to_unit, rate)
+    end
+  end
 end
 
 require 'conversions/unit'
