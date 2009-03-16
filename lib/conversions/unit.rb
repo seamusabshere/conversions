@@ -16,8 +16,15 @@ module Conversions
     # * _options_:
     #   * :scale: The number of digits behind the decimal point to you want to keep
     def to(to, options={})
+      case options
+      when Integer
+        scale = options
+      when Hash
+        scale = options[:scale]
+      end
+      
       value = @value * self.class.exchange_rate(@from, to)
-      options[:scale].nil? ? value : (value * (10 ** options[:scale])).round / (10 ** options[:scale]).to_f
+      scale.nil? ? value : (value * (10 ** scale)).round / (10 ** scale).to_f
     end
 
     def self.exchange_rate(from_unit, to_unit) #:nodoc:

@@ -28,11 +28,18 @@ class UnitTest < Test::Unit::TestCase
     assert_in_delta 22.0462262184878, amount.to(:pounds), DELTA
   end
   
-  def test_to_with_scale
+  def test_to_with_options
     amount = Conversions::Unit.new(10.0, :miles)
     assert_equal 16.1, amount.to(:kilometres, :scale => 1)
     assert_equal 16.09, amount.to(:kilometres, :scale => 2)
     assert_equal 16.093, amount.to(:kilometres, :scale => 3)
+  end
+    
+  def test_to_with_scale
+    amount = Conversions::Unit.new(10.0, :miles)
+    assert_equal 16.1, amount.to(:kilometres, 1)
+    assert_equal 16.09, amount.to(:kilometres, 2)
+    assert_equal 16.093, amount.to(:kilometres, 3)
   end
   
   def test_identity_transforms
