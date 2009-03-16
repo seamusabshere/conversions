@@ -23,6 +23,16 @@ module Conversions
     conversions[from][to] = rate
     conversions[to] ||= {}
     conversions[to][from] = 1.0 / rate
+    Conversions.define_shortcut(from)
+    Conversions.define_shortcut(to)
+  end
+
+  def self.define_shortcut(unit)
+    Numeric.class_eval do
+      define_method unit do
+        Conversions::Unit.new(self, unit)
+      end unless respond_to? unit
+    end
   end
 
   module Ext

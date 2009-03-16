@@ -12,6 +12,8 @@ class ConversionsTest < Test::Unit::TestCase
     assert_nothing_raised do
       1.convert(:records, :cds)
       1.convert(:cds, :records)
+      1.records.to(:cds)
+      1.cds.to(:records)
     end
   end
   
