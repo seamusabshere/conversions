@@ -21,14 +21,22 @@ namespace :rdoc do
   end
 end
 
-namespace :gem do
-  desc "Build the gem"
-  task :build do
-    sh 'gem build conversions.gemspec'
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |spec|
+    spec.name = "conversions"
+
+    spec.author = "Manfred Stienstra"
+    spec.email = "manfred@fngtps.com"
+
+    spec.description = <<-EOF
+      A Ruby on Rails plugin that adds conversion capabilities to numeric objects"
+    EOF
+    spec.summary = <<-EOF
+      A Ruby on Rails plugin that adds conversion capabilities to numeric objects"
+    EOF
+    spec.homepage = "http://github.com/Fingertips/conversions/tree/master"
   end
-  
-  desc "Install the gem"
-  task :install => :build do
-    sh 'sudo gem install conversions-*.gem'
-  end
+rescue LoadError
+  puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"
 end
