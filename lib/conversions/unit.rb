@@ -1,4 +1,4 @@
-module Conversions #:nodoc
+module Conversions
   # Proxy class to contain the unit as well as reference the base value
   class Unit
     # Create a new Unit instance.
@@ -13,11 +13,11 @@ module Conversions #:nodoc
     # Convert to a certain other unit.
     #
     # * _to_: The unit to convert to (ie. :kilometers)
-    # * _scale_: The number of digits behind the decimal point to you want to keep (Optional)
-    def to(to, options = {})
-      scale = options.delete(:scale)
+    # * _options_:
+    #   * :scale: The number of digits behind the decimal point to you want to keep
+    def to(to, options={})
       value = @value * self.class.exchange_rate(@from, to)
-      scale.nil? ? value : (value * (10 ** scale)).round / (10 ** scale).to_f
+      options[:scale].nil? ? value : (value * (10 ** options[:scale])).round / (10 ** options[:scale]).to_f
     end
 
     def self.exchange_rate(from_unit, to_unit) #:nodoc:

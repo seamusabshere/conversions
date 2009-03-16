@@ -1,6 +1,10 @@
 require File.dirname(__FILE__) + '/test_helper'
 
 class ExtTest < Test::Unit::TestCase
+  def setup
+    reset_defaults
+  end
+  
   def test_conversions
     assert_in_delta 1.609344, 1.convert(:miles, :kilometres), DELTA
     assert_in_delta 1.609344, 1.0.convert(:miles, :kilometres), DELTA

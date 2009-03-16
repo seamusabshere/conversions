@@ -1,4 +1,4 @@
-module Conversions #:nodoc:
+module Conversions
   # Implements new accessor classmethods to define conversion accessors on active record classes.
   module ActiveRecordAccessors
     # Adds conversion methods to the model for a certain attribute.
@@ -38,11 +38,11 @@ module Conversions #:nodoc:
         raise ArgumentError, "Please specify both :external and :internal metrics."
       end
       define_method "#{attribute}_in_#{options[:external]}" do
-        v = send(attribute)
-        v ? v.send(:convert, options[:internal], options[:external], :scale => options[:scale]) : nil
+        value = send(attribute)
+        value ? value.convert(options[:internal], options[:external], options.except(:internal, :external)) : nil
       end
       define_method "#{attribute}_in_#{options[:external]}=" do |v|
-        send("#{attribute}=", v.to_f.send(:convert, options[:external], options[:internal]))
+        send("#{attribute}=", v.to_f.convert(options[:external], options[:internal]), options.except(:internal, :external))
       end
     end
   end

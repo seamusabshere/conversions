@@ -1,51 +1,49 @@
+# Conversions makes it easy to convert between units.
 module Conversions
   mattr_accessor :conversions
-  self.conversions = {}
 
+  # Clear all previously registered conversions
+  def self.clear
+    self.conversions = {}
+  end
+  clear
+  
+  # Load all the default conversions shipped with the code
+  def self.load_defaults
+    load File.expand_path('../conversions/defaults.rb', __FILE__)
+  end
+
+  # Register a new conversion. This automatically also registers the inverse conversion.
+  #
+  # * _from_: The unit to convert from (ie. :miles, :stones, or :pints)
+  # * _to_: The unit to convert to
+  # * _rate_: The conversion rate from _from_ to _to_. (_from_ * _rate_ = _to_)
   def self.register(from, to, rate)
     conversions[from] ||= {}
-    conversions[from][to] ||= {}
     conversions[from][to] = rate
     conversions[to] ||= {}
-    conversions[to][from] ||= {}
-    conversions[to][from] = 1 / rate
+    conversions[to][from] = 1.0 / rate
   end
-  
-  # This is ugly
-  {
-    :miles => {
-      :kilometres => 1.609344
-    },
-    :kilograms => {
-      :grams => 1000.0,
-      :pounds => 2.20462262,
-      :short_tons => 0.00110231131,
-      :tons => 0.00110231131
-    },
-    :tons => {
-      :pounds => 2000.0
-    },
-    :gallons => {
-      :litres => 3.7854118
-    },
-    :cubic_feet => {
-      :cubic_meters => 0.0283168466
-    },
-    :miles_per_gallon => {
-      :kilometres_per_litre => 0.425143707
-    }
-  }.each do |from_unit, to_units|
-    to_units.each do |to_unit, rate|
-      register(from_unit, to_unit, rate)
+
+  module Ext
+    # Convert from one unit to another.
+    #
+    # * _from_: The unit to convert from (ie. :miles, :stones, or :pints)
+    # * _to_: The unit to convert to
+    # * _options_:
+    #   * :scale: The number of digits you want after the dot.
+    def convert(from, to, options={})
+      Conversions::Unit.new(self, from).to(to, options)
     end
   end
 end
 
 require 'conversions/unit'
-require 'conversions/ext'
-require 'conversions/active_record_accessors'
 
-Numeric.send :include, Conversions::Ext
+Conversions.load_defaults
+Numeric.send(:include, Conversions::Ext)
+
 if defined?(ActiveRecord)
-  ActiveRecord::Base.send :extend, Conversions::ActiveRecordAccessors
+  require 'conversions/active_record_accessors'
+  ActiveRecord::Base.send(:extend, Conversions::ActiveRecordAccessors)
 end
