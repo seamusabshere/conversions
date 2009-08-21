@@ -9,6 +9,14 @@ module Conversions
       @value = value
       @from = from
     end
+    
+    def to_i
+      @value.to_i
+    end
+    
+    def to_f
+      @value.to_f
+    end
 
     # Convert to a certain other unit.
     #

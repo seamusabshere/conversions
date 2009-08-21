@@ -48,6 +48,12 @@ class UnitTest < Test::Unit::TestCase
     end
   end
   
+  def test_to_f_and_to_i
+    amount = Conversions::Unit.new(10.5, :miles)
+    assert_equal 10, amount.to_i
+    assert_equal 10.5, amount.to_f
+  end
+  
   def test_register
     Conversions.register(:dollars, :cents, 100.0)
     assert_in_delta 0.01, Conversions::Unit.exchange_rate(:cents, :dollars), DELTA
