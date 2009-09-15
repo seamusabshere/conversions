@@ -42,7 +42,7 @@ module Conversions
         value ? value.convert(options[:internal], options[:external], options.except(:internal, :external)) : nil
       end
       define_method "#{attribute}_in_#{options[:external]}=" do |v|
-        send("#{attribute}=", v.to_f.convert(options[:external], options[:internal], options.except(:internal, :external)))
+        send("#{attribute}=", v.blank? ? nil : v.to_f.convert(options[:external], options[:internal], options.except(:internal, :external)))
       end
     end
   end

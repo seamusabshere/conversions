@@ -29,6 +29,24 @@ class AccessorTest < Test::Unit::TestCase
     assert_in_delta 745.645430684801, @flight.distance_in_miles, DELTA
   end
 
+  def test_set_zero
+    assert_equal nil, @flight.distance_in_miles
+    @flight.distance_in_miles = 0
+    assert_equal 0, @flight.distance_in_miles
+  end
+
+  def test_set_nil
+    assert_equal nil, @flight.distance_in_miles
+    @flight.distance_in_miles = nil
+    assert_equal nil, @flight.distance_in_miles
+  end
+  
+  def test_set_blank
+    assert_equal nil, @flight.distance_in_miles
+    @flight.distance_in_miles = ''
+    assert_equal nil, @flight.distance_in_miles
+  end
+
   def test_conversion_with_scale
     @flight.fuel_consumption = 3400
     assert_equal 898.18, @flight.fuel_consumption_in_gallons, DELTA
