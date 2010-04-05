@@ -26,8 +26,8 @@ module Conversions
     conversions[from][to] = rate
     conversions[to] ||= {}
     conversions[to][from] = 1.0 / rate
-    Conversions.define_shortcut(from)
-    Conversions.define_shortcut(to)
+    define_shortcut(from)
+    define_shortcut(to)
   end
 
   def self.define_shortcut(unit)
