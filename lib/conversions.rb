@@ -1,3 +1,6 @@
+require 'active_support'
+begin; require 'active_support/core_ext/module/attribute_accessors'; rescue MissingSourceFile; end
+
 # Conversions makes it easy to convert between units.
 module Conversions
   mattr_accessor :conversions

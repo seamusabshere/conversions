@@ -9,6 +9,7 @@ begin
     gem.description = %Q{A Ruby on Rails plugin that adds conversion capabilities to numeric objects}
     gem.email = "seamus@abshere.net"
     gem.homepage = "http://github.com/seamusabshere/conversions"
+    gem.add_dependency 'activesupport', '>=2.3.4'
     gem.authors = ["Manfred Stienstra", "Seamus Abshere"]
     gem.require_path = "lib"
     gem.rdoc_options << '--line-numbers' << '--inline-source'
