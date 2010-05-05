@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{conversions}
-  s.version = "1.4.4"
+  s.version = "1.4.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Manfred Stienstra", "Seamus Abshere"]
-  s.date = %q{2010-04-05}
+  s.date = %q{2010-05-05}
   s.description = %q{A Ruby on Rails plugin that adds conversion capabilities to numeric objects}
   s.email = %q{seamus@abshere.net}
   s.extra_rdoc_files = [
