@@ -1,5 +1,10 @@
 require 'active_support'
-begin; require 'active_support/core_ext/module/attribute_accessors'; rescue MissingSourceFile; end
+require 'active_support/version'
+%w{
+  active_support/core_ext/module/attribute_accessors
+}.each do |active_support_3_requirement|
+  require active_support_3_requirement
+end if ActiveSupport::VERSION::MAJOR == 3
 
 # Conversions makes it easy to convert between units.
 module Conversions
