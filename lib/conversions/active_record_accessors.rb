@@ -34,8 +34,8 @@ module Conversions
     #    conversion_accessor :length, :internal => :kilometers, :external => :miles
     #  end
     def conversion_accessor(attribute, options={})
-      if options[:internal].nil? or options[:external].nil?
-        raise ArgumentError, "Please specify both :external and :internal metrics."
+      if options[:internal].blank? or options[:external].blank?
+        raise ArgumentError, "[conversions] Please specify both :external and :internal metrics."
       end
       define_method "#{attribute}_in_#{options[:external]}" do
         value = send(attribute)

@@ -35,12 +35,12 @@ module Conversions
       scale.nil? ? value : (value * (10 ** scale)).round / (10 ** scale).to_f
     end
 
-    def self.exchange_rate(from_unit, to_unit) #:nodoc:
-      return 1 if from_unit == to_unit
-      from = Conversions.conversions[from_unit]
-      raise ArgumentError, "Can't convert from `#{from}', unknown unit" if from.nil?
-      to = from[to_unit]
-      raise ArgumentError, "Can't convert from `#{from_unit}' to `#{to_unit}', unknown unit" if to.nil?
+    def self.exchange_rate(from_unit_name, to_unit_name) #:nodoc:
+      return 1 if from_unit_name == to_unit_name
+      from = Conversions.conversions[from_unit_name]
+      raise ArgumentError, "[conversions] No unit named `#{from_unit_name}'" if from.blank?
+      to = from[to_unit_name]
+      raise ArgumentError, "[conversions] No exchange rate defined from `#{from_unit_name}' to `#{to_unit_name}'" if to.blank?
       to
     end
   end

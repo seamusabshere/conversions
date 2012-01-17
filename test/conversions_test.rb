@@ -7,7 +7,7 @@ class ConversionsTest < Test::Unit::TestCase
   
   def test_register
     Conversions.register(:records, :cds, 0.47)
-    assert 2, Conversions.conversions.length
+    assert_equal 2, Conversions.conversions.length
     
     assert_nothing_raised do
       1.convert(:records, :cds)
@@ -19,8 +19,8 @@ class ConversionsTest < Test::Unit::TestCase
   
   def test_clear
     Conversions.register(:records, :cds, 0.47)
-    assert 2, Conversions.conversions.length
+    assert_equal 2, Conversions.conversions.length
     Conversions.clear
-    assert 0, Conversions.conversions.length
+    assert_equal 0, Conversions.conversions.length
   end
 end
