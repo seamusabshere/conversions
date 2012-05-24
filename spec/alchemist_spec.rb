@@ -88,4 +88,22 @@ describe Alchemist do
       Alchemist.convertable_units(:kilogramps).should be_nil
     end
   end
+
+  describe '.convertable?' do
+    it 'returns true if two units are convertable' do
+      Alchemist.convertable?(:miles, :kilometer).should be_true
+    end
+    it 'returns false if two units are not convertable' do
+      Alchemist.convertable?(:miles, :pounds).should be_false
+    end
+    it 'returns true if four units are convertable' do
+      Alchemist.convertable?(:miles, :kilometer, :fathom, :league).should be_true
+    end
+    it 'raises ArgumentError if 0 arguments are given' do
+      expect { Alchemist.convertable? }.to raise_error(ArgumentError)
+    end
+    it 'raises ArgumentError if 1 argument is given' do
+      expect { Alchemist.convertable?(:mile) }.to raise_error(ArgumentError)
+    end
+  end
 end

@@ -38,6 +38,19 @@ module Alchemist
     list = conversion_table[type(unit)]
     list ? list.keys - [unit] : nil
   end
+
+  def self.convertable?(*units)
+    raise ArgumentError.new('You need specify at least two units') if units.length < 2
+
+    units.each do |unit_a|
+      type_a = type(unit_a)
+      units.each do |unit_b|
+        return false if type_a != type(unit_b)
+      end
+    end
+
+    true
+  end
   
   conversion_table.each do |type, conversions|
     conversions.each do |name, value|
