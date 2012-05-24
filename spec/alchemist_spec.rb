@@ -70,4 +70,13 @@ describe Alchemist do
       Alchemist.base(:miles).should == :miles
     end
   end
+
+  describe '.type' do
+    it 'returns a type for a known unit' do
+      assert_equal :mass, Alchemist.type(:kilogram)
+    end
+    it 'returns nil for an unknown unit' do
+      assert_nil Alchemist.type(:kilogramps)
+    end
+  end
 end

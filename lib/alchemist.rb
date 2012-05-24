@@ -28,6 +28,11 @@ module Alchemist
   def self.operator_actions
     @@operator_actions ||= {}
   end
+
+  def self.type(measurement)
+    convos = Conversions[base(measurement)]
+    convos ? convos.first : nil
+  end
   
   conversion_table.each do |type, conversions|
     conversions.each do |name, value|
