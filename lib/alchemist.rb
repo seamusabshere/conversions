@@ -33,6 +33,11 @@ module Alchemist
     convos = Conversions[base(measurement)]
     convos ? convos.first : nil
   end
+
+  def self.convertable_units(unit)
+    list = conversion_table[type(unit)]
+    list ? list.keys - [unit] : nil
+  end
   
   conversion_table.each do |type, conversions|
     conversions.each do |name, value|

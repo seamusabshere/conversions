@@ -79,4 +79,13 @@ describe Alchemist do
       assert_nil Alchemist.type(:kilogramps)
     end
   end
+
+  describe '.convertable_units' do
+    it 'returns a list of units to which one unit can be converted' do
+      Alchemist.convertable_units(:kilometer).should include(:mile)
+    end
+    it 'returns nil for an unknown unit' do
+      Alchemist.convertable_units(:kilogramps).should be_nil
+    end
+  end
 end
