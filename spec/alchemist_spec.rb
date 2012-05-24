@@ -61,4 +61,13 @@ describe Alchemist do
       assert_equal 1.qaat, 3.quut
     end
   end
+
+  describe '.base' do
+    it 'returns a base for a prefixed unit' do
+      Alchemist.base(:kilogram).should == :gram
+    end
+    it 'returns a unit that is not prefixed' do
+      Alchemist.base(:miles).should == :miles
+    end
+  end
 end

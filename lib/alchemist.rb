@@ -63,6 +63,10 @@ module Alchemist
     end
     [1.0, unit]
   end
+
+  def self.base(unit)
+    parse_prefix(unit).last
+  end
 end
 
 class Numeric
