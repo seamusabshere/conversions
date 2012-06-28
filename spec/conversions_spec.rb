@@ -1,3 +1,5 @@
+require 'helper'
+
 describe Conversions do
   describe 'conversions' do
     it 'handles bits and bytes' do
