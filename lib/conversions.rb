@@ -1,65 +1,99 @@
-require 'active_support'
-require 'active_support/version'
-if ActiveSupport::VERSION::MAJOR >= 3
-  require 'active_support/core_ext'
-end
+require 'conversions/compound_numeric_conversion'
+require 'conversions/default_table'
+require 'conversions/numeric_conversion'
+require 'conversions/numeric_ext'
+require 'conversions/unit_prefixes'
 
-# Conversions makes it easy to convert between units.
 module Conversions
-  mattr_accessor :conversions
+  Registry = {}
 
-  # Clear all previously registered conversions
-  def self.clear
-    self.conversions = {}
+  @use_si = false
+  class << self
+    attr_accessor :use_si
   end
-  clear
   
-  # Load all the default conversions shipped with the code
-  def self.load_defaults
-    load File.expand_path('../conversions/defaults.rb', __FILE__)
+  @@si_units = %w[m meter metre meters metres liter litre litres liters l L farad farads F coulombs C gray grays Gy siemen siemens S mhos mho ohm ohms volt volts V ]
+  @@si_units += %w[joule joules J newton newtons N lux lx henry henrys H b B bits bytes bit byte lumen lumens lm candela candelas cd]
+  @@si_units += %w[tesla teslas T gauss Gs G gram gramme grams grammes g watt watts W pascal pascals Pa]
+  @@si_units += %w[becquerel becquerels Bq curie curies Ci]
+  
+  def self.unit_prefixes
+    @@unit_prefixes ||= UnitPrefixes
+  end
+  
+  def self.table
+    @@table ||= DefaultTable
+  end
+  
+  def self.operator_actions
+    @@operator_actions ||= {}
   end
 
-  # Register a new conversion. This automatically also registers the inverse conversion.
-  #
-  # * _from_: The unit to convert from (ie. :miles, :stones, or :pints)
-  # * _to_: The unit to convert to
-  # * _rate_: The conversion rate from _from_ to _to_. (_from_ * _rate_ = _to_)
-  def self.register(from, to, rate)
-    conversions[from] ||= {}
-    conversions[from][to] = rate
-    conversions[to] ||= {}
-    conversions[to][from] = 1.0 / rate
-    define_shortcut(from)
-    define_shortcut(to)
+  def self.type(measurement)
+    convos = Registry[base(measurement)]
+    convos ? convos.first : nil
   end
 
-  def self.define_shortcut(unit)
-    Numeric.class_eval do
-      define_method unit do
-        Conversions::Unit.new(self, unit)
-      end unless respond_to? unit
+  def self.convertable_units(unit)
+    list = table[type(unit)]
+    list ? list.keys - [unit] : nil
+  end
+
+  def self.convertable?(*units)
+    raise ArgumentError.new('You need specify at least two units') if units.length < 2
+
+    units.each do |unit_a|
+      type_a = type(unit_a)
+      units.each do |unit_b|
+        return false if type_a != type(unit_b)
+      end
+    end
+
+    true
+  end
+  
+  table.each do |type, conversions|
+    conversions.each do |name, value|
+      Registry[name] ||= []
+      Registry[name] << type
+    end
+  end
+  
+  def self.register(type, names, value)
+    names = [names] unless names.is_a?(Array)
+    value = value.is_a?(NumericConversion) ? value.base(type) : value
+    Conversions.table[type] ||= {}
+    names.each do |name|
+      Registry[name] ||= []
+      Registry[name] << type
+      Conversions.table[type][name] = value
     end
   end
 
-  module Ext
-    # Convert from one unit to another.
-    #
-    # * _from_: The unit to convert from (ie. :miles, :stones, or :pints)
-    # * _to_: The unit to convert to
-    # * _options_:
-    #   * :scale: The number of digits you want after the dot.
-    def convert(from, to, options={})
-      Conversions::Unit.new(self, from).to(to, options)
+	def self.register_operation type, other_type, operation, converted_type
+	  operator_actions[operation] ||= []
+    operator_actions[operation] << [type, other_type, converted_type]
+	end
+  
+  def self.parse_prefix(unit)
+    unit_prefixes.each do |prefix, value|
+      if unit.to_s =~ /^#{prefix}.+/ && @@si_units.include?(unit.to_s.gsub(/^#{prefix}/,''))        
+        if !(Registry[ unit.to_s.gsub(/^#{prefix}/,'').to_sym ] & [ :information_storage ]).empty? && !@use_si && value >= 1000.0 && value.to_i & -value.to_i != value
+          value = 2 ** (10 * (Math.log(value) / Math.log(10)) / 3)
+        end
+        return [value, unit.to_s.gsub(/^#{prefix}/,'').to_sym]
+      end
     end
+    [1.0, unit]
+  end
+
+  def self.base(unit)
+    parse_prefix(unit).last
   end
 end
 
-require 'conversions/unit'
-
-Conversions.load_defaults
-Numeric.send(:include, Conversions::Ext)
-
-if defined?(ActiveRecord)
-  require 'conversions/active_record_accessors'
-  ActiveRecord::Base.send(:extend, Conversions::ActiveRecordAccessors)
+class Numeric
+  include Conversions::NumericExt
 end
+
+require 'conversions/compound'
