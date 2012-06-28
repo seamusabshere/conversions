@@ -47,20 +47,28 @@ describe Conversions do
   end
 
   describe '.register' do
-    it 'registers new units' do
-      Conversions.register(:distance, [:beard_second, :beard_seconds], 5.angstroms)
-      assert_equal( 1.beard_second, 5.angstroms)    
-    end
+    context 'official API' do
+      it 'registers new units' do
+        Conversions.register(:distance, [:beard_second, :beard_seconds], 5.angstroms)
+        assert_equal( 1.beard_second, 5.angstroms)    
+      end
 
-    it 'registers proc-based unit conversions' do
-      Conversions.register(:temperature, :yeti, [Proc.new{|t| t + 1}, Proc.new{|t| t - 1}])
-      assert_equal( 0.yeti, 1.kelvin)    
-    end
+      it 'registers proc-based unit conversions' do
+        Conversions.register(:temperature, :yeti, [Proc.new{|t| t + 1}, Proc.new{|t| t - 1}])
+        assert_equal( 0.yeti, 1.kelvin)    
+      end
 
-    it 'automatically adds new types' do
-      Conversions.register :quux, :qaat, 1.0
-      Conversions.register :quux, :quut, 3.0
-      assert_equal 1.qaat, 3.quut
+      it 'automatically adds new types' do
+        Conversions.register :quux, :qaat, 1.0
+        Conversions.register :quux, :quut, 3.0
+        assert_equal 1.qaat, 3.quut
+      end
+    end
+    context 'classic API' do
+      it 'registers new units' do
+        Conversions.register(:angstroms, :mustache_seconds, 3)
+        assert_equal(1.mustache_seconds, 3.angstroms)    
+      end
     end
   end
 
@@ -107,5 +115,13 @@ describe Conversions do
     it 'raises ArgumentError if 1 argument is given' do
       expect { Conversions.convertable?(:mile) }.to raise_error(ArgumentError)
     end
+  end
+
+  it 'is backwards compatible with 1.x' do
+    2.54.convert(:centimeters, :inches).to_f.should be_within(0.00001).of(1.0)
+    2.54.convert(:inches, :centimeters, :scale => 2).to_f.should be_within(0.001).of(6.450)
+
+    2.54.centimeters.to(:inches).to_f.should be_within(0.00001).of(1.0)
+    2.54.inches.to(:centimeters, 2).to_f.should be_within(0.001).of(6.450)
   end
 end

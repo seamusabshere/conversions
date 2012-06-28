@@ -1,4 +1,10 @@
 require 'bundler/setup'
+
+class ActiveRecord
+  class Base
+  end
+end
+
 require 'conversions'
 
 require 'test/unit/assertions'

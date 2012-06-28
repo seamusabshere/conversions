@@ -10,12 +10,18 @@ module Conversions
       per
     end
     
-    def to(type = nil)
-      unless type
+    def to(type = nil, precision = nil)
+      result = unless type
         self 
       else
         send(type)
       end
+
+      unless precision.nil?
+        result = result.round(precision)
+      end
+
+      result
     end
     alias_method :as, :to
     

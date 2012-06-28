@@ -59,7 +59,20 @@ module Conversions
     end
   end
   
-  def self.register(type, names, value)
+  def self.register(*args)
+    if existing_unit_type = self.type(args[0])
+      register_classic existing_unit_type, *args
+    else
+      register_standard *args
+    end
+  end
+
+  def self.register_classic(existing_unit_type, existing_unit, new_unit, factor)
+    existing_base_unit = base_unit(existing_unit_type)
+    register_standard existing_unit_type, new_unit, factor.from(existing_unit).to(existing_base_unit)
+  end
+
+  def self.register_standard(type, names, value)
     names = [names] unless names.is_a?(Array)
     value = value.is_a?(NumericConversion) ? value.base(type) : value
     Conversions.table[type] ||= {}
@@ -90,10 +103,20 @@ module Conversions
   def self.base(unit)
     parse_prefix(unit).last
   end
+
+  def self.base_unit(type)
+    table[type].keys.find { |k| table[type][k] == 1.0 }
+  end
 end
 
 class Numeric
   include Conversions::NumericExt
+end
+
+require 'conversions/accessors'
+
+if Object.const_defined?('ActiveRecord')
+  ActiveRecord::Base.extend Conversions::Accessors
 end
 
 require 'conversions/compound'
