@@ -18,10 +18,11 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--line-numbers", "--inline-source"]
   s.extra_rdoc_files = [
     "LICENSE",
-    "README",
-    "TODO"
+    "README.markdown",
   ]
 
   s.add_development_dependency 'bundler', '~> 1.1.0'
-  s.add_development_dependency 'rspec', '~> 2'
+  s.add_development_dependency 'rake'
+  s.add_development_dependency 'rspec', '~> 2.10'
+  s.add_development_dependency 'yard', '~> 0.8.0'
 end
